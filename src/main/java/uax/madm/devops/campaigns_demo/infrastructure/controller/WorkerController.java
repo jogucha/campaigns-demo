@@ -2,24 +2,24 @@ package uax.madm.devops.campaigns_demo.infrastructure.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
 import uax.madm.devops.campaigns_demo.application.services.WorkerService;
+import uax.madm.devops.campaigns_demo.domain.model.Campaign;
 import uax.madm.devops.campaigns_demo.domain.model.Worker;
+import uax.madm.devops.campaigns_demo.infrastructure.dto.CampaignDto;
 import uax.madm.devops.campaigns_demo.infrastructure.dto.NewWorkerDto;
+import uax.madm.devops.campaigns_demo.infrastructure.dto.OldWorkerDto;
 import uax.madm.devops.campaigns_demo.infrastructure.mapper.NewWorkerMapper;
 import uax.madm.devops.campaigns_demo.infrastructure.mapper.OldWorkerMapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "/workers")
 public class WorkerController {
 
@@ -33,7 +33,17 @@ public class WorkerController {
         this.oldWorkerMapper = oldWorkerMapper;
     }
 
-/*    @GetMapping(value = "/{id}")
+    @GetMapping
+    public List<NewWorkerDto> listWorkers() {
+        List<Worker> models = workerService.findWorkers();
+        List<NewWorkerDto> workerDtos = models.stream()
+                .map(NewWorkerDto.Mapper::toDto)
+                .collect(Collectors.toList());
+        return workerDtos;
+    }
+
+
+    @GetMapping(value = "/{id}")
     public OldWorkerDto findOne(@PathVariable Long id) {
         Worker model = workerService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -61,7 +71,7 @@ public class WorkerController {
         // return OldWorkerDto.Mapper.toDto(createdModel);
         return oldWorkerMapper.toDto(createdModel);
     }
-*/
+
     @GetMapping(value = "/{id}", produces = "application/json")
     public NewWorkerDto findOneNewStructure(@PathVariable Long id) {
         Worker model = workerService.findById(id)

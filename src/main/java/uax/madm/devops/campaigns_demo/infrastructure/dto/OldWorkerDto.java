@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import uax.madm.devops.campaigns_demo.domain.model.ServiceUser;
 import uax.madm.devops.campaigns_demo.domain.model.Worker;
 
-@Deprecated
+//@Deprecated
 @Schema(deprecated = true)
 public record OldWorkerDto( // @formatter:off
 

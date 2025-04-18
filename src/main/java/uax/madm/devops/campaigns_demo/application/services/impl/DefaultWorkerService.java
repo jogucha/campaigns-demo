@@ -1,5 +1,6 @@
 package uax.madm.devops.campaigns_demo.application.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,11 @@ public class DefaultWorkerService implements WorkerService {
 
     public DefaultWorkerService(WorkerRepository workerRepository) {
         this.workerRepository = workerRepository;
+    }
+
+    @Override
+    public List<Worker> findWorkers() {
+        return workerRepository.findAll();
     }
 
     @Override
