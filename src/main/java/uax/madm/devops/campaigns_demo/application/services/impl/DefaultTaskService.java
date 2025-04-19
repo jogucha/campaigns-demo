@@ -33,7 +33,7 @@ public class DefaultTaskService implements TaskService {
     public Task save(Task task) {
         task.setId(null);
         task.setStatus(TaskStatus.TO_DO);
-        task.setAssignee(null);
+        //task.setAssignee(null);
         return taskRepository.save(task);
     }
 

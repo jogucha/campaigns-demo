@@ -54,13 +54,23 @@ public class WorkerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    public NewWorkerDto create(@RequestBody @Valid NewWorkerDto newWorker) {
+        // Worker model = OldWorkerDto.Mapper.toModel(newWorker);
+        Worker model = newWorkerMapper.toModel(newWorker);
+        Worker createdModel = this.workerService.save(model);
+        // return OldWorkerDto.Mapper.toDto(createdModel);
+        return newWorkerMapper.toDto(createdModel);
+    }
+
+/*    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public OldWorkerDto create(@RequestBody @Valid OldWorkerDto newWorker) {
         // Worker model = OldWorkerDto.Mapper.toModel(newWorker);
         Worker model = oldWorkerMapper.toModel(newWorker);
         Worker createdModel = this.workerService.save(model);
         // return OldWorkerDto.Mapper.toDto(createdModel);
         return oldWorkerMapper.toDto(createdModel);
-    }
+    }*/
 
     @PutMapping(value = "/{id}")
     public OldWorkerDto update(@PathVariable Long id, @RequestBody @Validated(OldWorkerDto.WorkerUpdateValidationData.class) OldWorkerDto updatedWorker) {

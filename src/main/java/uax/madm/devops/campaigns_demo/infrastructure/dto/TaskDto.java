@@ -15,6 +15,7 @@ import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import uax.madm.devops.campaigns_demo.domain.model.Campaign;
 import uax.madm.devops.campaigns_demo.domain.model.Task;
+import uax.madm.devops.campaigns_demo.domain.model.Worker;
 import uax.madm.devops.campaigns_demo.domain.model.enums.TaskStatus;
 import uax.madm.devops.campaigns_demo.infrastructure.mapper.NewWorkerMapper;
 
@@ -43,6 +44,10 @@ public record TaskDto( // @formatter:off
                                message = "campaignId can't be null")
                        Long campaignId,
 
+                       @NotNull(groups = { TaskUpdateValidationData.class, Default.class },
+                               message = "workerId can't be null")
+                       Long workerId,
+
                        @Valid
                        @ConvertGroup(from = Default.class, to = WorkerOnTaskCreateValidationData.class)
                        NewWorkerDto assignee,
@@ -60,8 +65,16 @@ public record TaskDto( // @formatter:off
             Campaign campaign = new Campaign();
             campaign.setId(dto.campaignId());
 
-            Task model = new Task(dto.name(), dto.description(), dto.dueDate(), campaign, dto.status(), newWorkerMapper.toModel(dto.assignee()), dto.uuid(), Optional.ofNullable(dto.estimatedHours())
+/*            Task model = new Task(dto.name(), dto.description(), dto.dueDate(), campaign, dto.status(), newWorkerMapper.toModel(dto.assignee()), dto.uuid(), Optional.ofNullable(dto.estimatedHours())
+                    .orElse(0));*/
+
+            // Added - BEGIN
+            Worker worker = new Worker();
+            worker.setId(dto.workerId());
+            Task model = new Task(dto.name(), dto.description(), dto.dueDate(), campaign, dto.status(), worker, dto.uuid(), Optional.ofNullable(dto.estimatedHours())
                     .orElse(0));
+            //Added - END
+
             if (!Objects.isNull(dto.id())) {
                 model.setId(dto.id());
             }
@@ -74,7 +87,7 @@ public record TaskDto( // @formatter:off
             if (model == null)
                 return null;
             TaskDto dto = new TaskDto(model.getId(), model.getUuid(), model.getName(), model.getDescription(), model.getDueDate(), model.getStatus(), model.getCampaign()
-                    .getId(), newWorkerMapper.toDto(model.getAssignee()), model.getEstimatedHours());
+                    .getId(), model.getAssignee().getId(), newWorkerMapper.toDto(model.getAssignee()), model.getEstimatedHours());
             return dto;
         }
     }
